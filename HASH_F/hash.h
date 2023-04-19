@@ -27,13 +27,13 @@ class CHashTable
 {
     public:
         size_t  size;
-        CList <SBucket <TKey, TValue>>*   Table;
+        CList <SBucket <TKey, TValue>>**   Table;
 
         CHashTable (int Size)
         {
             size = Size;
 
-            Table = new CList <SBucket <TKey, TValue>> [size];
+            Table = new CList <SBucket <TKey, TValue>>* [size];
 
             return;
         }
@@ -45,27 +45,45 @@ class CHashTable
             return;
         }
 
+        int key_to_index (TKey Key)
+        {
+            return first_ASCII (Key) % size;
+        }
+
         void add_to_table (TKey Key, TValue Value)
         {
             MCA (Table != nullptr, VOID);
 
-            Table[Key % size].insert_tail ({Key, Value});
+            int index = key_to_index (Key);
+
+            Table[index]->insert_tail ({Key, Value});
 
             return;
         }
 
-        uint64_t constant (char* line)
+        void print_table ()
         {
-            MLA (line != nullptr);
+            for (int cnt = 0; cnt < size; ++cnt)
+            {
+                if (Table[cnt] != nullptr)
+                {
+                    Table[cnt]->print_list ();
+                }
+            }
 
+            return;
+        }
+
+        uint64_t constant (TKey Key)
+        {
             return 1ul;
         }
 
-        uint64_t first_ASCII (char* line)
+        uint64_t first_ASCII (TKey Key)
         {
-            MLA (line != nullptr);
+            MCA ((char*) Key != nullptr, 0);
 
-            return (uint64_t) line[0];
+            return (uint64_t) ((char*) Key)[0];
         }
 };
 

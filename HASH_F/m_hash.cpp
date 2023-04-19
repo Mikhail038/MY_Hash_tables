@@ -17,5 +17,7 @@ int main ()
     HashTable.add_to_table (1, 5);
     HashTable.add_to_table (1, 5);
 
+    HashTable.print_table ();
+
     return 0;
 }
