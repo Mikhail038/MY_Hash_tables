@@ -2,22 +2,30 @@
 //17.04.2023
 //==================================================================================================================================================================
 
-#include <stackT.h>
-#include <simpleListT.h>
+#include <stdio.h>
+
+#include "stackT.h"
+#include "simpleListT.h"
 
 #include "hash.h"
+
 
 //==================================================================================================================================================================
 
 int main ()
 {
-    CHashTable<int, int> HashTable (10);
+    char* Data = read_data_from_file ("DATA/hamlet.txt");
 
-    HashTable.add_to_table (1, 5);
-    HashTable.add_to_table (1, 5);
-    HashTable.add_to_table (1, 5);
+    CHashTable<int> HashTable (10);
+
+    load_in_HT_data_by_words (&HashTable, Data);
 
     HashTable.print_table ();
 
+    free (Data);
+
     return 0;
 }
+
+//==================================================================================================================================================================
+

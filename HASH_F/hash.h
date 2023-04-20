@@ -15,58 +15,87 @@
 
 //==================================================================================================================================================================
 
-template <typename TKey, typename TValue>
+template <typename TValue>
 struct SBucket
 {
-    TKey    key;
     TValue  value;
+    char*   key;
 };
 
-template <typename TKey, typename TValue>
+template <typename TValue>
 class CHashTable
 {
     public:
         size_t  size;
-        CList <SBucket <TKey, TValue>>**   Table;
+        CList <SBucket <TValue>>**   Table;
 
         CHashTable (int Size)
         {
             size = Size;
 
-            Table = new CList <SBucket <TKey, TValue>>* [size];
+            Table = new CList <SBucket <TValue>>* [size];
+
+            for (size_t cnt = 0; cnt < size; cnt++)
+            {
+                Table[cnt] = nullptr;
+            }
 
             return;
         }
 
         ~CHashTable ()
         {
+            for (size_t cnt = 0; cnt < size; ++cnt)
+            {
+                if (Table[cnt] != nullptr)
+                {
+                    delete Table[cnt];
+                }
+            }
+
             delete[] Table;
 
             return;
         }
 
-        int key_to_index (TKey Key)
+        int key_to_index (char* Key)
         {
-            return first_ASCII (Key) % size;
+            MCA (Key != nullptr, 0);
+
+            int hash = first_ASCII (Key);
+
+            return hash % size;
         }
 
-        void add_to_table (TKey Key, TValue Value)
+        void add_to_table (char* Key, TValue Value)
         {
             MCA (Table != nullptr, VOID);
 
+//             SBucket<TValue>* bucket = new SBucket<TValue>;
+//
+//             bucket->key      = Key;
+//             bucket->value    = Value;
+
+
             int index = key_to_index (Key);
 
-            Table[index]->insert_tail ({Key, Value});
+            if (Table[index] == nullptr)
+            {
+                Table[index] = new CList<SBucket<TValue>>;
+            }
+
+            Table[index]->insert_tail ({Value, Key});
 
             return;
         }
 
         void print_table ()
         {
-            for (int cnt = 0; cnt < size; ++cnt)
+            for (size_t cnt = 0; cnt < size; ++cnt)
             {
                 if (Table[cnt] != nullptr)
                 {
+                    printf ("=%d=\n", cnt);
                     Table[cnt]->print_list ();
                 }
             }
@@ -74,17 +103,30 @@ class CHashTable
             return;
         }
 
-        uint64_t constant (TKey Key)
+//==================================================================================================================================================================
+
+        uint64_t constant (char* Key)
         {
+            MCA (Key != nullptr, 0);
+
             return 1ul;
         }
 
-        uint64_t first_ASCII (TKey Key)
+        uint64_t first_ASCII (char* Key)
         {
-            MCA ((char*) Key != nullptr, 0);
+            MCA (Key != nullptr, 0);
 
-            return (uint64_t) ((char*) Key)[0];
+            return (uint64_t) Key[0];
         }
 };
+
+//==================================================================================================================================================================
+
+int count_symbols_in_file (FILE* stream);
+
+char* read_data_from_file (const char* Filename);
+
+template <typename TValue>
+void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data);
 
 //==================================================================================================================================================================
