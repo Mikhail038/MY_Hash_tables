@@ -52,11 +52,4 @@ char* read_data_from_file (const char* Filename)
     return Buf;
 }
 
-template <typename TValue>
-void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)
-{
-
-    return;
-}
-
 //==================================================================================================================================================================

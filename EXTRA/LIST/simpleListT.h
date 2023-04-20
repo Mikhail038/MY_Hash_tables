@@ -91,14 +91,14 @@ class CList
             size--;
         }
 
-        void print_elem (SNode<TListData>* node)
+        void print_elem (SNode<TListData>* Node)
         {
-            printf ("[%d]", node->data);
+            printf ("[%d]", Node->data);
 
-            if (node->next != nullptr)
+            if (Node->next != nullptr)
             {
                 printf ("->");
-                print_elem (node->next);
+                print_elem (Node->next);
             }
 
             return;
@@ -109,7 +109,28 @@ class CList
             printf ("size %d\n", size);
             print_elem (head);
             printf ("\n");
+
+            return;
         }
+
+//         void free_elements ()
+//         {
+//             free_element (head);
+//
+//             return;
+//         }
+//
+//         void free_element (SNode<TListData>* Node)
+//         {
+//             if (Node->next != nullptr)
+//             {
+//                 delete &(Node->data);
+//
+//                 free_element (Node->next);
+//             }
+//
+//             return;
+//         }
 };
 
 //===================================================================================================================================================================

@@ -1,3 +1,5 @@
+#pragma once
+
 //==================================================================================================================================================================
 //17.04.2023
 //==================================================================================================================================================================
@@ -6,12 +8,18 @@
 
 #include "MYassert.h"
 
+#include <string.h>
+#include <ctype.h>
 #include <inttypes.h>
 
 
 //==================================================================================================================================================================
 
+#define PLUG 0
+
 #define VOID (void) 0
+
+#define MAX_WORD_LENGTH 20
 
 //==================================================================================================================================================================
 
@@ -20,6 +28,11 @@ struct SBucket
 {
     TValue  value;
     char*   key;
+
+    ~SBucket()
+    {
+        free (key);
+    }
 };
 
 template <typename TValue>
@@ -29,7 +42,7 @@ class CHashTable
         size_t  size;
         CList <SBucket <TValue>>**   Table;
 
-        CHashTable (int Size)
+        CHashTable (size_t Size)
         {
             size = Size;
 
@@ -58,11 +71,11 @@ class CHashTable
             return;
         }
 
-        int key_to_index (char* Key)
+        size_t key_to_index (char* Key)
         {
             MCA (Key != nullptr, 0);
 
-            int hash = first_ASCII (Key);
+            size_t hash = first_ASCII (Key);
 
             return hash % size;
         }
@@ -71,13 +84,7 @@ class CHashTable
         {
             MCA (Table != nullptr, VOID);
 
-//             SBucket<TValue>* bucket = new SBucket<TValue>;
-//
-//             bucket->key      = Key;
-//             bucket->value    = Value;
-
-
-            int index = key_to_index (Key);
+            size_t index = key_to_index (Key);
 
             if (Table[index] == nullptr)
             {
@@ -105,18 +112,18 @@ class CHashTable
 
 //==================================================================================================================================================================
 
-        uint64_t constant (char* Key)
+        size_t constant (char* Key)
         {
             MCA (Key != nullptr, 0);
 
             return 1ul;
         }
 
-        uint64_t first_ASCII (char* Key)
+        size_t first_ASCII (char* Key)
         {
             MCA (Key != nullptr, 0);
 
-            return (uint64_t) Key[0];
+            return (size_t) Key[0];
         }
 };
 
@@ -127,6 +134,35 @@ int count_symbols_in_file (FILE* stream);
 char* read_data_from_file (const char* Filename);
 
 template <typename TValue>
-void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data);
+void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)
+{
+    size_t Length = strlen (Data);
+
+    for (size_t cnt = 0; cnt < Length; ++cnt)
+    {
+        if (isalpha (Data[cnt]) != 0)
+        {
+            char* Word = (char*) calloc (MAX_WORD_LENGTH, sizeof (char));
+
+            size_t i = 0;
+            while ((isalpha (Data[cnt]) != 0) || (Data[cnt] == '\''))
+            {
+                printf ("%c", Data[cnt]);
+
+                Word[i] = Data[cnt];
+
+                i++;
+                cnt++;
+            }
+
+            printf ("\n");
+
+            Word[i] = '\0';
+            HashTable->add_to_table (Word, PLUG);
+        }
+    }
+
+    return;
+}
 
 //==================================================================================================================================================================
