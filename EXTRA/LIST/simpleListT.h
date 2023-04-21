@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include "MYassert.h"
 
+#include "bucket.h"
+
 //===================================================================================================================================================================
 
 template <typename TListData>
@@ -98,6 +100,19 @@ class CList
         void print_elem (SNode<TListData>* Node)
         {
             printf ("[%d]", Node->data);
+
+            if (Node->next != nullptr)
+            {
+                printf ("->");
+                print_elem (Node->next);
+            }
+
+            return;
+        }
+
+        void print_elem (SNode<CBucket<int>>* Node)
+        {
+            printf ("[%s]", Node->data.key);
 
             if (Node->next != nullptr)
             {
