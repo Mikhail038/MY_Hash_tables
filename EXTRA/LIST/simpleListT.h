@@ -15,6 +15,12 @@ struct SNode
     TListData   data;
     SNode*      next;
     SNode*      prev;
+
+    SNode ()
+    {
+        next = nullptr;
+        prev = nullptr;
+    }
 };
 
 template <typename TListData>
@@ -27,8 +33,6 @@ class CList
 
         CList()
         {
-            //this = new CList <TListData>;
-
             head = nullptr;
             tail = nullptr;
 

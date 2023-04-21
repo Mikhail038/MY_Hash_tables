@@ -16,11 +16,11 @@ int main ()
 {
     char* Data = read_data_from_file ("DATA/hamlet.txt");
 
-    CHashTable<int> HashTable (10);
+    CHashTable<int> HashTable (300);
 
     load_in_HT_data_by_words (&HashTable, Data);
 
-    HashTable.print_table ();
+    HashTable.print_collision_lengths ();
 
     free (Data);
 

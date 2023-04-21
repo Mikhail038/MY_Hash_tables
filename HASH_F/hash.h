@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <inttypes.h>
 
+#include <cstring>
 
 //==================================================================================================================================================================
 
@@ -24,29 +25,77 @@
 //==================================================================================================================================================================
 
 template <typename TValue>
-struct SBucket
+class CBucket
 {
-    TValue  value;
-    char*   key;
+    public:
+        TValue  value;
+        char*   key;
 
-    ~SBucket()
-    {
-        free (key);
-    }
+        CBucket ()
+        {
+            key = nullptr;
+            value = 0;
+        }
+
+        CBucket (TValue Value, char* Key)
+        {
+            key = Key;
+            value = Value;
+        }
+
+        CBucket (const CBucket& other)
+        {
+            value   = other.value;
+            key     = new char[std::strlen(other.key) + 1];
+            std::strcpy (key, other.key);
+        }
+
+        CBucket (const CBucket&& other)
+        {
+            value   = other.value;
+
+            key     = other.key;
+            other.key = nullptr;
+        }
+
+        CBucket& operator= (const CBucket& other)
+        {
+            if (this == &other)
+            {
+                return *this;
+            }
+
+            char* tmp_key = new char[std::strlen (other.key) + 1];
+
+            std::strcpy (tmp_key, other.key);
+
+            delete[] key;
+
+            key = tmp_key;
+
+            return *this;
+        }
+
+        ~CBucket()
+        {
+            delete [] key;
+        }
 };
+
+//==================================================================================================================================================================
 
 template <typename TValue>
 class CHashTable
 {
     public:
         size_t  size;
-        CList <SBucket <TValue>>**   Table;
+        CList <CBucket <TValue>>**   Table;
 
         CHashTable (size_t Size)
         {
             size = Size;
 
-            Table = new CList <SBucket <TValue>>* [size];
+            Table = new CList <CBucket <TValue>>* [size];
 
             for (size_t cnt = 0; cnt < size; cnt++)
             {
@@ -71,6 +120,8 @@ class CHashTable
             return;
         }
 
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         size_t key_to_index (char* Key)
         {
             MCA (Key != nullptr, 0);
@@ -88,10 +139,14 @@ class CHashTable
 
             if (Table[index] == nullptr)
             {
-                Table[index] = new CList<SBucket<TValue>>;
+                Table[index] = new CList<CBucket<TValue>>;
             }
 
-            Table[index]->insert_tail ({Value, Key});
+            CBucket<TValue>* bucket = new CBucket<TValue>(Value, Key);
+
+            Table[index]->insert_tail (*bucket);
+
+            delete bucket;
 
             return;
         }
@@ -110,7 +165,21 @@ class CHashTable
             return;
         }
 
-//==================================================================================================================================================================
+        void print_collision_lengths ()
+        {
+            for (size_t cnt = 0; cnt < size; ++cnt)
+            {
+                if (Table[cnt] != nullptr)
+                {
+                    printf ("|%3d| SIZE: %d\n", cnt, Table[cnt]->size);
+
+                }
+            }
+
+            return;
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         size_t constant (char* Key)
         {
@@ -142,12 +211,12 @@ void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)
     {
         if (isalpha (Data[cnt]) != 0)
         {
-            char* Word = (char*) calloc (MAX_WORD_LENGTH, sizeof (char));
+            char* Word = (char*) new char [MAX_WORD_LENGTH];
 
             size_t i = 0;
             while ((isalpha (Data[cnt]) != 0) || (Data[cnt] == '\''))
             {
-                printf ("%c", Data[cnt]);
+                //printf ("%c", Data[cnt]);
 
                 Word[i] = Data[cnt];
 
@@ -155,7 +224,7 @@ void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)
                 cnt++;
             }
 
-            printf ("\n");
+            //printf ("\n");
 
             Word[i] = '\0';
             HashTable->add_to_table (Word, PLUG);
