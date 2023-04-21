@@ -25,66 +25,6 @@
 
 //==================================================================================================================================================================
 
-// template <typename TValue>
-// class CBucket
-// {
-//     public:
-//         TValue  value;
-//         char*   key;
-//
-//         CBucket ()
-//         {
-//             key = nullptr;
-//             value = 0;
-//         }
-//
-//         CBucket (TValue Value, char* Key)
-//         {
-//             key = Key;
-//             value = Value;
-//         }
-//
-//         CBucket (const CBucket& other)
-//         {
-//             value   = other.value;
-//             key     = new char[std::strlen(other.key) + 1];
-//             std::strcpy (key, other.key);
-//         }
-//
-//         CBucket (const CBucket&& other)
-//         {
-//             value   = other.value;
-//
-//             key     = other.key;
-//             other.key = nullptr;
-//         }
-//
-//         CBucket& operator= (const CBucket& other)
-//         {
-//             if (this == &other)
-//             {
-//                 return *this;
-//             }
-//
-//             char* tmp_key = new char[std::strlen (other.key) + 1];
-//
-//             std::strcpy (tmp_key, other.key);
-//
-//             delete[] key;
-//
-//             key = tmp_key;
-//
-//             return *this;
-//         }
-//
-//         ~CBucket()
-//         {
-//             delete [] key;
-//         }
-// };
-
-//==================================================================================================================================================================
-
 template <typename TValue>
 class CHashTable
 {
@@ -175,7 +115,7 @@ class CHashTable
         {
             MCA (Key != nullptr, 0);
 
-            size_t hash = h_length (Key);
+            size_t hash = h_first_ascii (Key);
 
             return hash % size;
         }
@@ -189,7 +129,7 @@ class CHashTable
             return (size_t) 1;
         }
 
-        size_t h_first_ASCII (char* Key)
+        size_t h_first_ascii (char* Key)
         {
             MCA (Key != nullptr, 0);
 
@@ -201,6 +141,23 @@ class CHashTable
             MCA (Key != nullptr, 0);
 
             return strlen (Key);
+        }
+
+        size_t h_sum_ascii (char* Key)
+        {
+            MCA (Key != nullptr, 0);
+
+            size_t sum = 0;
+
+            size_t cnt = 0;
+            while (Key[cnt] != '\0')
+            {
+                sum += (size_t) Key[cnt];
+
+                cnt++;
+            }
+
+            return sum;
         }
 };
 
