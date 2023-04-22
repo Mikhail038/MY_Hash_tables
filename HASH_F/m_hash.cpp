@@ -14,9 +14,9 @@
 
 int main ()
 {
-    char* Data = read_data_from_file ("DATA/hamlet.txt");
+    char* Data = read_data_from_file ("DATA/words.txt");
 
-    CHashTable<int> HashTable (100, h_ror);
+    CHashTable<int> HashTable (5000, h_ror);
 
     load_in_HT_data_by_words (&HashTable, Data);
 
