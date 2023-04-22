@@ -53,3 +53,106 @@ char* read_data_from_file (const char* Filename)
 }
 
 //==================================================================================================================================================================
+
+size_t h_constant (char* Key)
+{
+    MCA (Key != nullptr, 0);
+
+    return (size_t) 1;
+}
+
+size_t h_first_ascii (char* Key)
+{
+    MCA (Key != nullptr, 0);
+
+    return (size_t) Key[0];
+}
+
+size_t h_length (char* Key)
+{
+    MCA (Key != nullptr, 0);
+
+    return strlen (Key);
+}
+
+size_t h_sum_ascii (char* Key)
+{
+    MCA (Key != nullptr, 0);
+
+    size_t sum = 0;
+
+    size_t cnt = 0;
+    while (Key[cnt] != '\0')
+    {
+        sum += (size_t) Key[cnt];
+
+        cnt++;
+    }
+
+    return sum;
+}
+
+size_t h_rol (char* Key)
+{
+    size_t magic_value = 0;
+
+    size_t cnt = 0;
+    while (Key[cnt] != '\0')
+    {
+        magic_value = rol (magic_value, 1);
+        magic_value = magic_value ^ Key[cnt];
+
+        cnt++;
+    }
+
+    return magic_value;
+}
+
+size_t h_ror (char* Key)
+{
+    size_t magic_value = 0;
+
+    size_t cnt = 0;
+    while (Key[cnt] != '\0')
+    {
+        magic_value = ror (magic_value, 1);
+        magic_value = magic_value ^ Key[cnt];
+
+        cnt++;
+    }
+
+    return magic_value;
+}
+
+//==================================================================================================================================================================
+
+
+
+size_t rol (size_t a, size_t n)
+{
+    size_t t1, t2;
+
+    n = n % (sizeof(a)*8);  // нормализуем n
+
+    t1 = a << n;   // двигаем а вправо на n бит, теряя старшие биты
+
+    t2 = a >> (sizeof(a)*8 - n); // перегоняем старшие биты в младшие
+
+
+    return t1 | t2;  // объединяем старшие и младшие биты
+}
+
+size_t ror (size_t a, size_t n)
+{
+    size_t t1, t2;
+
+    n = n % (sizeof(a)*8);  // нормализуем n
+
+    t1 = a >> n;   // двигаем а влево на n бит, теряя младшие биты
+
+    t2 = a << (sizeof(a)*8 - n); // перегоняем младшие биты в старшие
+
+    return t1 | t2;  // объединяем старшие и младшие биты
+}
+
+//==================================================================================================================================================================

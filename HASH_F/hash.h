@@ -25,16 +25,45 @@
 
 //==================================================================================================================================================================
 
+size_t rol (size_t a, size_t n);
+
+size_t ror (size_t a, size_t n);
+
+//==================================================================================================================================================================
+
+size_t h_constant (char* Key);
+
+size_t h_first_ascii (char* Key);
+
+size_t h_length (char* Key);
+
+size_t h_sum_ascii (char* Key);
+
+size_t h_rol (char* Key);
+
+size_t h_ror (char* Key);
+
+//==================================================================================================================================================================
+
+int count_symbols_in_file (FILE* stream);
+
+char* read_data_from_file (const char* Filename);
+
+//==================================================================================================================================================================
+
 template <typename TValue>
 class CHashTable
 {
     public:
         size_t  size;
         CList <CBucket <TValue>>**   Table;
+        size_t (*current_h_function) (char* Key);
 
-        CHashTable (size_t Size)
+        CHashTable (size_t Size, size_t (*user_function) (char*) = h_ror): current_h_function(user_function)
         {
             size = Size;
+
+            //*current_h_function = user_function;
 
             Table = new CList <CBucket <TValue>>* [size];
 
@@ -111,61 +140,47 @@ class CHashTable
             return;
         }
 
+//         void print_data_csv (FILE* OutputFile)
+//         {
+//             for (size_t cnt = 0; cnt < size; ++cnt)
+//             {
+//                 if (Table[cnt] != nullptr)
+//                 {
+//                     fprintf (OutputFile, "%d, %d\n", cnt, Table[cnt]->size);
+//                 }
+//             }
+//
+//             return;
+//         }
+
+        void print_data_csv (FILE* OutputFile)
+        {
+            for (size_t cnt = 0; cnt < size; ++cnt)
+            {
+                if (Table[cnt] == nullptr)
+                {
+                    fprintf (OutputFile, "%d\n", 0);
+                }
+                else
+                {
+                    fprintf (OutputFile, "%d\n", Table[cnt]->size);
+                }
+            }
+
+            return;
+        }
+
         size_t key_to_index (char* Key)
         {
             MCA (Key != nullptr, 0);
 
-            size_t hash = h_first_ascii (Key);
+            size_t hash = current_h_function (Key);
 
             return hash % size;
-        }
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-        size_t h_constant (char* Key)
-        {
-            MCA (Key != nullptr, 0);
-
-            return (size_t) 1;
-        }
-
-        size_t h_first_ascii (char* Key)
-        {
-            MCA (Key != nullptr, 0);
-
-            return (size_t) Key[0];
-        }
-
-        size_t h_length (char* Key)
-        {
-            MCA (Key != nullptr, 0);
-
-            return strlen (Key);
-        }
-
-        size_t h_sum_ascii (char* Key)
-        {
-            MCA (Key != nullptr, 0);
-
-            size_t sum = 0;
-
-            size_t cnt = 0;
-            while (Key[cnt] != '\0')
-            {
-                sum += (size_t) Key[cnt];
-
-                cnt++;
-            }
-
-            return sum;
         }
 };
 
 //==================================================================================================================================================================
-
-int count_symbols_in_file (FILE* stream);
-
-char* read_data_from_file (const char* Filename);
 
 template <typename TValue>
 void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)

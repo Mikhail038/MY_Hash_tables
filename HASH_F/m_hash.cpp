@@ -16,14 +16,19 @@ int main ()
 {
     char* Data = read_data_from_file ("DATA/hamlet.txt");
 
-    CHashTable<int> HashTable (400);
+    CHashTable<int> HashTable (100, h_ror);
 
     load_in_HT_data_by_words (&HashTable, Data);
 
     HashTable.print_collision_lengths ();
 
-    HashTable.print_table ();
+    FILE* OutputFile = fopen ("DATA/HashTestData.csv","w");
 
+    HashTable.print_data_csv (OutputFile);
+
+    fclose (OutputFile);
+
+    // HashTable.print_table ();
 
     free (Data);
 
