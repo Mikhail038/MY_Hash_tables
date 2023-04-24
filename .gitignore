@@ -1,2 +1,5 @@
 *.o
 HASH
+info
+*.json
+*.cache/

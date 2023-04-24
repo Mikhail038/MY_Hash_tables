@@ -4,6 +4,8 @@
 //17.04.2023
 //==================================================================================================================================================================
 
+#include "Tracy.hpp"
+
 #include "simpleListT.h"
 #include "bucket.h"
 
@@ -63,6 +65,7 @@ class CHashTable
         {
             size = Size;
 
+
             //*current_h_function = user_function;
 
             Table = new CList <CBucket <TValue>>* [size];
@@ -119,7 +122,7 @@ class CHashTable
                 if (Table[cnt] != nullptr)
                 {
                     printf ("=%d=\n", cnt);
-                    Table[cnt]->print_list ();
+                    Table[cnt]->print_list();
                 }
             }
 
