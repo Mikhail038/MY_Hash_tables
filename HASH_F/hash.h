@@ -4,13 +4,17 @@
 //17.04.2023
 //==================================================================================================================================================================
 
-#include "Tracy.hpp"
+// #include "Tracy.hpp"
+#define ZoneScoped
+
+#include <immintrin.h>
 
 #include "simpleListT.h"
 #include "bucket.h"
 
 #include "MYassert.h"
 
+#include <cstddef>
 #include <string.h>
 #include <ctype.h>
 #include <inttypes.h>
@@ -24,6 +28,23 @@
 #define VOID (void) 0
 
 #define MAX_WORD_LENGTH 20
+
+//==================================================================================================================================================================
+
+// void* operator new (std::size_t count)
+// {
+//     auto ptr = malloc (count);
+//
+//     TracyAlloc (ptr , count);
+//     return ptr;
+// }
+//
+// void operator delete (void* ptr) noexcept
+// {
+//     TracyFree (ptr);
+//
+//     free (ptr);
+// }
 
 //==================================================================================================================================================================
 
@@ -63,10 +84,9 @@ class CHashTable
 
         CHashTable (size_t Size, size_t (*user_function) (char*) = h_ror): current_h_function(user_function)
         {
+            ZoneScoped;
+
             size = Size;
-
-
-            //*current_h_function = user_function;
 
             Table = new CList <CBucket <TValue>>* [size];
 
@@ -80,6 +100,8 @@ class CHashTable
 
         ~CHashTable ()
         {
+            ZoneScoped;
+
             for (size_t cnt = 0; cnt < size; ++cnt)
             {
                 if (Table[cnt] != nullptr)
@@ -97,7 +119,11 @@ class CHashTable
 
         void add_to_table (char* Key, TValue Value)
         {
-            MCA (Table != nullptr, VOID);
+            ZoneScoped;
+
+            MLA (Table != nullptr);
+            MLA (Key != nullptr);
+
 
             size_t index = key_to_index (Key);
 
@@ -115,8 +141,39 @@ class CHashTable
             return;
         }
 
+        TValue get_by_key (char* Key)
+        {
+            ZoneScoped;
+
+            size_t index = key_to_index (Key);
+
+            SNode<CBucket<TValue>>* Node = Table[index]->head;
+
+            while (strcmp (Key, Node->data.key) != 0)
+            {
+                MLA(Node->next != nullptr);
+
+                Node = Node->next;
+            }
+
+            return Node->data.value;
+        }
+
+        size_t key_to_index (char* Key)
+        {
+            ZoneScoped;
+
+            size_t hash = current_h_function (Key);
+
+            return hash % size;
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         void print_table ()
         {
+            ZoneScoped;
+
             for (size_t cnt = 0; cnt < size; ++cnt)
             {
                 if (Table[cnt] != nullptr)
@@ -131,6 +188,8 @@ class CHashTable
 
         void print_collision_lengths ()
         {
+            ZoneScoped;
+
             for (size_t cnt = 0; cnt < size; ++cnt)
             {
                 if (Table[cnt] != nullptr)
@@ -143,21 +202,10 @@ class CHashTable
             return;
         }
 
-//         void print_data_csv (FILE* OutputFile)
-//         {
-//             for (size_t cnt = 0; cnt < size; ++cnt)
-//             {
-//                 if (Table[cnt] != nullptr)
-//                 {
-//                     fprintf (OutputFile, "%d, %d\n", cnt, Table[cnt]->size);
-//                 }
-//             }
-//
-//             return;
-//         }
-
         void print_data_csv (FILE* OutputFile)
         {
+            ZoneScoped;
+
             for (size_t cnt = 0; cnt < size; ++cnt)
             {
                 if (Table[cnt] == nullptr)
@@ -172,15 +220,6 @@ class CHashTable
 
             return;
         }
-
-        size_t key_to_index (char* Key)
-        {
-            MCA (Key != nullptr, 0);
-
-            size_t hash = current_h_function (Key);
-
-            return hash % size;
-        }
 };
 
 //==================================================================================================================================================================
@@ -188,6 +227,8 @@ class CHashTable
 template <typename TValue>
 void load_in_HT_data_by_words (CHashTable<TValue>* HashTable, char* Data)
 {
+    ZoneScoped;
+
     size_t Length = strlen (Data);
 
     for (size_t cnt = 0; cnt < Length; ++cnt)

@@ -4,7 +4,7 @@
 //18.04.2023
 //===================================================================================================================================================================
 
-#include "Tracy.hpp"
+// #include "Tracy.hpp"
 
 #include <stdlib.h>
 #include "MYassert.h"
@@ -22,6 +22,8 @@ struct SNode
 
     SNode ()
     {
+        ZoneScoped;
+
         next = nullptr;
         prev = nullptr;
     }
@@ -37,6 +39,8 @@ class CList
 
         CList()
         {
+            ZoneScoped;
+
             head = nullptr;
             tail = nullptr;
 
@@ -47,6 +51,8 @@ class CList
 
         ~CList()
         {
+            ZoneScoped;
+
             while (tail != nullptr)
             {
                 SNode<TListData>*  old_tail_prev = tail->prev;
@@ -61,6 +67,8 @@ class CList
 
         void insert_tail (TListData value)
         {
+            ZoneScoped;
+
             if (tail == nullptr)
             {
                 head = new SNode<TListData>;
@@ -90,6 +98,8 @@ class CList
 
         void delete_tail ()
         {
+            ZoneScoped;
+
             tail = tail->prev;
 
             delete tail->next;
@@ -103,6 +113,8 @@ class CList
 
         void print_list ()
         {
+            ZoneScoped;
+
             printf ("size %d\n", size);
             print_elem (head);
             printf ("\n");

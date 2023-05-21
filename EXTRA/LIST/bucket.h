@@ -2,7 +2,8 @@
 
 //==================================================================================================================================================================
 
-#include "Tracy.hpp"
+// #include "Tracy.hpp"
+#define ZoneScoped
 
 #include <string.h>
 #include <ctype.h>
@@ -21,18 +22,24 @@ class CBucket
 
         CBucket ()
         {
+            ZoneScoped;
+
             key = nullptr;
             value = 0;
         }
 
         CBucket (TValue Value, char* Key)
         {
+            ZoneScoped;
+
             key = Key;
             value = Value;
         }
 
         CBucket (const CBucket& other)
         {
+            ZoneScoped;
+
             value   = other.value;
             key     = new char[std::strlen(other.key) + 1];
             std::strcpy (key, other.key);
@@ -40,6 +47,8 @@ class CBucket
 
         CBucket (const CBucket&& other)
         {
+            ZoneScoped;
+
             value   = other.value;
 
             key     = other.key;
@@ -48,6 +57,8 @@ class CBucket
 
         CBucket& operator= (const CBucket& other)
         {
+            ZoneScoped;
+
             if (this == &other)
             {
                 return *this;
@@ -66,6 +77,8 @@ class CBucket
 
         ~CBucket()
         {
+            ZoneScoped;
+
             delete [] key;
         }
 };

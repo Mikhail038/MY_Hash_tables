@@ -3,3 +3,4 @@ HASH
 info
 *.json
 *.cache/
+callgrind.out.*

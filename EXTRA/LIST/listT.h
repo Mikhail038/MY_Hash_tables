@@ -21,7 +21,7 @@ typedef struct
     int             prev;
 } SElem;
 
-template <typename ListDataType>z
+template <typename ListDataType>
 typedef struct
 {
     int    free;
