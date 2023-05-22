@@ -26,7 +26,7 @@ int main ()
 
     char* Data = read_data_from_file ("DATA/words.txt");
 
-    CHashTable<int> HashTable (4999, h_ror);
+    CHashTable<int> HashTable (4999, h_crc32);
 
     load_in_HT_data_by_words (&HashTable, Data);
 

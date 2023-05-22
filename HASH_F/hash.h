@@ -66,6 +66,8 @@ size_t h_rol (char* Key);
 
 size_t h_ror (char* Key);
 
+size_t h_crc32 (char* Key);
+
 //==================================================================================================================================================================
 
 inline const bool my_simd_cmp (const __m256i* FirstVector, const __m256i* SecondVector)
@@ -153,10 +155,7 @@ class CHashTable
 
             char Key_packed[SIMD_SIZE] __attribute__ ((aligned (32))) {0};
 
-            for (int cnt = 0; (Key[cnt] != '\0') && (cnt != SIMD_SIZE - 1); ++cnt)
-            {
-                Key_packed[cnt] = Key[cnt];
-            }
+            memcpy(&Key_packed, Key, strlen (Key));
 
             const __m256i Key_vector = _mm256_load_si256((const __m256i*) Key_packed);
 
