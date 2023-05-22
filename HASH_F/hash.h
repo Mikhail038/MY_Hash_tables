@@ -68,6 +68,13 @@ size_t h_ror (char* Key);
 
 //==================================================================================================================================================================
 
+inline const bool my_simd_cmp (const __m256i* FirstVector, const __m256i* SecondVector)
+{
+    return (_mm256_movemask_epi8(_mm256_cmpeq_epi64(*FirstVector, *SecondVector)) == (int) 0xFFFFFFFF);
+}
+
+//==================================================================================================================================================================
+
 int count_symbols_in_file (FILE* stream);
 
 char* read_data_from_file (const char* Filename);
@@ -124,7 +131,6 @@ class CHashTable
             MLA (Table != nullptr);
             MLA (Key != nullptr);
 
-
             size_t index = key_to_index (Key);
 
             if (Table[index] == nullptr)
@@ -141,23 +147,46 @@ class CHashTable
             return;
         }
 
-        TValue get_by_key (char* Key)
+        TValue new_get_by_key (char* Key)
         {
-            ZoneScoped;
-
             size_t index = key_to_index (Key);
 
-            SNode<CBucket<TValue>>* Node = Table[index]->head;
+            char Key_packed[SIMD_SIZE] __attribute__ ((aligned (32))) {0};
 
-            while (strcmp (Key, Node->data.key) != 0)
+            for (int cnt = 0; (Key[cnt] != '\0') && (cnt != SIMD_SIZE - 1); ++cnt)
+            {
+                Key_packed[cnt] = Key[cnt];
+            }
+
+            const __m256i Key_vector = _mm256_load_si256((const __m256i*) Key_packed);
+
+            SNode<CBucket<TValue>>* Node = Table[index]->head;
+            while (my_simd_cmp (&Key_vector, &Node->data.key) != 0)
             {
                 MLA(Node->next != nullptr);
 
                 Node = Node->next;
             }
-
             return Node->data.value;
         }
+
+//         TValue get_by_key (char* Key)
+//         {
+//             ZoneScoped;
+//
+//             size_t index = key_to_index (Key);
+//
+//             SNode<CBucket<TValue>>* Node = Table[index]->head;
+//
+//             while (strcmp (Key, Node->data.key) != 0)
+//             {
+//                 MLA(Node->next != nullptr);
+//
+//                 Node = Node->next;
+//             }
+//
+//             return Node->data.value;
+//         }
 
         size_t key_to_index (char* Key)
         {

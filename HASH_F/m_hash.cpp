@@ -36,15 +36,17 @@ int main ()
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    int buf = 0;
-    for (int i = 0; i < 100000000; ++i)
+    volatile int  buf = 0;
+    for (int i = 0; i < 10000000; ++i)
     {
-        buf = HashTable.get_by_key("man");
-        //printf ("{%d}\n", HashTable.get_by_key("man"));
+        buf = HashTable.new_get_by_key("man");
+        // printf ("{%d}\n", HashTable.get_by_key("man"));
+        // printf ("{%d}\n", i);
     }
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     printf ( Kbright KYLW "Time spend: %d microseconds\n" KNRM ,std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+    printf ( "[%d]\n:", buf);
 
 
     // free(Name);
