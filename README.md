@@ -16,44 +16,44 @@
 size_t h_constant (char* Key);
 ~~~
 Возвращает константый хэш
-<img align="left" width="1000" src="DATA/words_5000/h_1.png">
+<img align="left" width="600" src="DATA/words_5000/h_1.png">
 
 
 ~~~C++
 size_t h_first_ascii (char* Key);
 ~~~
 Возвращает ASCII-код первого символа
-<img align="left" width="1000" src="DATA/words_5000/h_2.png">
+<img align="left" width="600" src="DATA/words_5000/h_2.png">
 
 ~~~C++
 size_t h_length (char* Key);
 ~~~
 Возвращает длину слова
-<img align="left" width="1000" src="DATA/words_5000/h_3.png">
+<img align="left" width="600" src="DATA/words_5000/h_3.png">
 
 ~~~C++
 size_t h_sum_ascii (char* Key);
 ~~~
 Возвращает сумму ASCII-кодов символов слова
-<img align="left" width="1000" src="DATA/words_5000/sum.png">
+<img align="left" width="600" src="DATA/words_5000/sum.png">
 
 ~~~C++
 size_t h_rol (char* Key);
 ~~~
 Возвращает рещультат рекурсивного алгоритма, осонованного на циклическом сдвиге влево
-<img align="left" width="1000" src="DATA/words_5000/rol.png">
+<img align="left" width="600" src="DATA/words_5000/rol.png">
 
 ~~~C++
 size_t h_ror (char* Key);
 ~~~
 Возвращает рещультат рекурсивного алгоритма, осонованного на циклическом сдвиге вправо
-<img align="left" width="1000" src="DATA/words_5000/ror.png">
+<img align="left" width="600" src="DATA/words_5000/ror.png">
 
 ~~~C++
 size_t h_crc32 (char* Key);
 ~~~
 Возвращает реузльтат алгоритма CRC32
-<img align="left" width="1000" src="DATA/words_5000/h_6.png">
+<img align="left" width="600" src="DATA/words_5000/h_6.png">
 
 
 Из них была выбрана хэш-функция, ведущая себя наиболее равномерно. Таковй ожидаемо оказалась h_crc32.
