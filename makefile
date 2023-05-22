@@ -64,8 +64,8 @@ OBJECTS/$(VR_FUNCS).o:  $(VR_NAME)_F/$(VR_FUNCS).cpp
 clean:
 	@rm -rf OBJECTS/$(VR_FUNCS).o OBJECTS/$(VR_MAIN).o
 
-.PHONY: run
-run:	DO
+.PHONY: graph
+graph:	DO
 	@./$(VR_NAME)
 	@python3 DATA/HistoBuilder.py
 

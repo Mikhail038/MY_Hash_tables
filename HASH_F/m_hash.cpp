@@ -26,7 +26,7 @@ int main ()
 
     char* Data = read_data_from_file ("DATA/words.txt");
 
-    CHashTable<int> HashTable (4999, h_crc32);
+    CHashTable<int> HashTable (4999, h_rol);
 
     load_in_HT_data_by_words (&HashTable, Data);
 
@@ -48,10 +48,7 @@ int main ()
     printf ( Kbright KYLW "Time spend: %d microseconds\n" KNRM ,std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
     printf ( "[%d]\n:", buf);
 
-
     // free(Name);
-
-    //HashTable.print_collision_lengths ();
 
     FILE* OutputFile = fopen ("DATA/HashTestData.csv","w");
 

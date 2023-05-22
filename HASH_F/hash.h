@@ -230,6 +230,25 @@ class CHashTable
             return;
         }
 
+        void print_average_length ()
+        {
+            ZoneScoped;
+
+            size_t Average = 0;
+
+            for (size_t cnt = 0; cnt < size; ++cnt)
+            {
+                if (Table[cnt] != nullptr)
+                {
+                    Average += Table[cnt]->size;
+                }
+            }
+
+            printf ("Average: %lg\n", (double) Average / (double) size);
+
+            return;
+        }
+
         void print_data_csv (FILE* OutputFile)
         {
             ZoneScoped;

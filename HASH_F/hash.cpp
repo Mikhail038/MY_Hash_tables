@@ -4,6 +4,7 @@
 
 // #include "Tracy.hpp"
 
+// #include <crc32intrin.h>
 #include <immintrin.h>
 #define ZoneScoped
 
@@ -222,21 +223,12 @@ size_t h_crc32 (char* Key)
     const uint8_t *buf = (const uint8_t *) Key;
     unsigned int crc = 0xffffffff;
 
-    while (*buf != 0)
-    {
-        // crc = (crc << 8) ^ CRC32Table[((crc >> 24) ^ *buf) & 255];
-        // crc = CRC32Table[((crc >> 24) ^ *buf) & 0xFF] ^ (crc >> 8);
-
-        asm volatile (
-            ".intel_syntax noprefix\n"
-            "crc32 %0, %1\n"
-            ".att_syntax prefix\n"
-            : "=r" (crc)
-            : "r" (*buf), "r" (crc)
-            :
-        );
-        buf++;
-    }
+    asm volatile
+    (
+        "crc32 %1, %0"
+        : "=r"(crc)
+        : "m"(*buf), "0"(crc)
+    );
 
     return crc ^ 0xffffffff;
 }
